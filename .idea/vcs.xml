@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/fdev/public/js-sdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/posse-chat-v1" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/posse-chat-v1/public/js-sdk" vcs="Git" />
   </component>
