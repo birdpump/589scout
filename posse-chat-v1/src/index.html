@@ -6,6 +6,9 @@
         body {
             margin: 0;
             background-color: #37393f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .top-setup {
@@ -48,10 +51,19 @@
             color: white;
         }
 
+        .top-text{
+            position: absolute;
+            top: 50px;
+            margin: 4px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+            color: red;
+        }
+
 
         .mgrid-cont {
             position: absolute;
-            top: 50px;
+            top: 90px;
             right: 0;
             left: 0;
             margin-right: auto;
@@ -62,7 +74,8 @@
         .grid-text {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 15px;
-            margin: 3px;
+            margin-bottom: 3px;
+            margin-top: 0;
             text-align: center;
             color: white;
         }
@@ -81,6 +94,11 @@
             align-items: center;
             background-color: #212225;
             border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .grid-item:hover{
+            background-color: #2b2c2f;
         }
 
         .cone-select {
@@ -103,7 +121,7 @@
 
         .mchge-cont {
             position: absolute;
-            top: 400px;
+            top: 320px;
             right: 0;
             left: 0;
             margin-right: auto;
@@ -114,7 +132,8 @@
         .chge-text {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 15px;
-            margin: 3px;
+            margin-bottom: 3px;
+            margin-top: 0;
             text-align: center;
             color: white;
         }
@@ -135,7 +154,11 @@
             background-color: #212225;
             border-radius: 3px;
             aspect-ratio: 1 / 1; /* set the aspect ratio to 1:1 */
+            cursor: pointer;
+        }
 
+        .chge-item:hover{
+            background-color: #2b2c2f;
         }
 
         .robot-select {
@@ -146,6 +169,31 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+
+        .botnav {
+            position: relative;
+            bottom: -20px;
+
+            max-width: 800px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botBtn{
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            background-color: black;
+            border: 2px solid #00bcf0;
+            border-radius: 5px;
+            height: 35px;
+            color: white;
+            margin: 0 6px 0 6px;
+            cursor: pointer;
+        }
+
     </style>
     <title>test</title>
 </head>
@@ -155,6 +203,7 @@
     <label for="team-num">Team Number</label><input type='number' id="team-num"/>
     <label for="mat-num">Match Number</label><input type='number' id="mat-num"/>
 </div>
+<h1 class="top-text" id="mode-text">Autonomous Mode</h1>
 <div class="mgrid-cont">
     <h1 class="grid-text">Grid</h1>
     <div class="grid-container">
@@ -256,12 +305,21 @@
             <div class="r-icon"></div>
         </div>
     </div>
+
+    <div class="botnav">
+
+        <button class="botBtn">Clear</button>
+        <button class="botBtn" id="subbtn" onclick="submit()">Submit Autonomous</button>
+    </div>
 </div>
+
+
 
 <script>
     let Gelements = document.getElementsByClassName("grid-item");
     let Celements = document.getElementsByClassName("chge-item");
-
+    let inauto = true;
+    //setup grid
     let changeGrid = function () {
         if (this.dataset.typ === "1") {
             if (this.children[0].classList.contains("cone-select")) {
@@ -292,6 +350,7 @@
         Gelements[i].addEventListener('click', changeGrid, false);
     }
 
+    //setup charge station
     let changeChge = function () {
         if (this.children[0].classList.contains("robot-select")) {
             this.children[0].classList.remove("robot-select");
@@ -305,6 +364,59 @@
 
     for (let i = 0; i < Celements.length; i++) {
         Celements[i].addEventListener('click', changeChge, false);
+    }
+
+
+    function submit(){
+
+        let newGelements = document.getElementsByClassName("grid-item");
+        let newCelements = document.getElementsByClassName("chge-item");
+
+        let teamNum = document.getElementById("team-num").value;
+        let matNum = document.getElementById("mat-num").value;
+
+        //collect grid items
+        let gridpos = {};
+
+        for (let i = 0; i < newGelements.length; i++) {
+
+            if(newGelements[i].children[0].classList.contains("cube-select")){
+                gridpos[`pos${i}`] = 2;
+            }else if(newGelements[i].children[0].classList.contains("cone-select")){
+                gridpos[`pos${i}`] = 1;
+            }else{
+                gridpos[`pos${i}`] = 0;
+            }
+        }
+
+        //collect charge station items
+        let chgepos = {};
+
+        for (let i = 0; i < newCelements.length; i++) {
+
+            if(newCelements[i].children[0].classList.contains("robot-select")){
+                chgepos[`pos${i}`] = 1;
+            }else{
+                chgepos[`pos${i}`] = 0;
+            }
+        }
+
+        let dataobj = {};
+        dataobj.teamnum = teamNum;
+        dataobj.matnum  = matNum;
+        dataobj.gdata = gridpos;
+        dataobj.cdata = chgepos;
+        let jsonString = JSON.stringify(dataobj);
+
+        console.log(jsonString)
+        if(inauto){
+            inauto = false;
+            document.getElementById("subbtn").innerHTML = "Submit Teleop";
+            document.getElementById("mode-text").innerHTML = "Teleop Mode";
+            //run submit for auto here
+        }else{
+            //run submit for teliop here
+        }
     }
 </script>
 </body>
